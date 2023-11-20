@@ -1,0 +1,162 @@
+This is an example of SQL queries I wrote for exploration of the publicly available chinook sample database. For clarity, I have included the database file and it's associated schema.
+I used sqlite3 via command prompt to execute these commands. Outputs are included.
+
+Total Quantity and Revenue per Invoice (Top 10). Groups records by Invoice IDs (Invoice ID is not a primary key) to provide total quantities and revenue:
+  SELECT InvoiceId,
+      Count(Quantity) AS qty,
+      UnitPrice * Count(Quantity) AS Total
+  FROM invoice_items
+  GROUP BY InvoiceId LIMIT 10;
+
+Output:
+  InvoiceId             qty  Tot
+  --------------------  ---  -----
+  1                     2    1.98
+  2                     4    3.96
+  3                     6    5.94
+  4                     9    8.91
+  5                     14   13.86
+  6                     1    0.99
+  7                     2    1.98
+  8                     2    1.98
+  9                     4    3.96
+  10                    6    5.94
+
+
+Total Quantity and Revenue per Invoice (Top 10, Ordered by Total Revenue). Gives us highest revenue invoices:
+  SELECT InvoiceId,
+      Count(Quantity) AS qty,
+      UnitPrice * Count(Quantity) AS Total
+  FROM invoice_items
+  GROUP BY InvoiceId
+  ORDER BY Total DESC LIMIT 10;
+
+Output:
+  InvoiceId             qty  Total
+  --------------------  ---  -----
+  89                    14   27.86
+  103                   14   27.86
+  194                   14   27.86
+  299                   14   27.86
+  88                    9    17.91
+  312                   9    17.91
+  5                     14   13.86
+  12                    14   13.86
+  19                    14   13.86
+  26                    14   13.86
+
+Total Quantity and Revenue per Invoice (Top 10, Quantity >= 9, Ordered by Total Revenue):
+  SELECT InvoiceId,
+      Count(Quantity) AS qty,
+      UnitPrice * Count(Quantity) AS Total
+  FROM invoice_items
+  GROUP BY InvoiceId
+  HAVING Count(Quantity) >= 9
+  ORDER BY Total DESC
+  LIMIT 10;
+
+Output:
+  InvoiceId             qty  Total
+  --------------------  ---  -----
+  89                    14   27.86
+  103                   14   27.86
+  194                   14   27.86
+  299                   14   27.86
+  88                    9    17.91
+  312                   9    17.91
+  5                     14   13.86
+  12                    14   13.86
+  19                    14   13.86
+  26                    14   13.86
+
+Total Quantity and Revenue per Invoice (Quantity >= 9, InvoiceID > 100, Ordered by Total Revenue):
+  SELECT InvoiceId,
+      Count(Quantity) AS qty,
+      UnitPrice * Count(Quantity) AS Total
+  FROM invoice_items
+  WHERE InvoiceID > 100
+  GROUP BY InvoiceId
+  HAVING Count(Quantity) >= 9
+  ORDER BY Total DESC
+  LIMIT 10;
+
+Output:
+  InvoiceId             qty  Total
+  --------------------  ---  -----
+  103                   14   27.86
+  194                   14   27.86
+  299                   14   27.86
+  312                   9    17.91
+  110                   14   13.86
+  117                   14   13.86
+  124                   14   13.86
+  131                   14   13.86
+  138                   14   13.86
+  145                   14   13.86
+
+Employee Full Name and Country Abbreviation:
+  SELECT FirstName || ' ' || LastName AS FullName,
+      SUBSTR(Country, 0, 3) AS Country
+  FROM employees;
+
+Employee Full Name and Hire Year:
+  SELECT FirstName || ' ' || LastName AS FullName,
+      STRFTIME('%Y', HireDate) AS HireYear
+  FROM employees;
+
+Employee Full Name, Hire Year, and Years Since Hire:
+  SELECT FirstName || ' ' || LastName AS FullName,
+      STRFTIME('%Y', HireDate) AS HireYear,
+      CAST(STRFTIME('%Y', 'now') - STRFTIME('%Y', HireDate) AS INTEGER) AS YearsSinceHire
+  FROM employees;
+
+Current Date in 'YYYY MM DD' Format:
+  SELECT STRFTIME('%Y %m %d','now');
+
+Employee City Classification (Calgary or Other):
+  SELECT EmployeeId,
+      FirstName,
+      LastName,
+      City,
+      CASE City
+          WHEN 'Calgary' THEN 'Calgary'
+          ELSE 'Other'
+      END Calgary
+  FROM Employees
+  ORDER BY LastName, FirstName;
+
+Track Size Categories (Small, Medium, Large, Other):
+  SELECT TrackId,
+      Name,
+      Bytes,
+      CASE 
+          WHEN Bytes < 300000 THEN 'small'
+          WHEN Bytes >= 300001 AND Bytes <= 500000 THEN 'medium'
+          WHEN Bytes >= 500001 THEN 'large'
+          ELSE 'Other'
+      END bytescategory
+  FROM tracks;
+
+Number of Customers per Country (Ordered by Customer Count):
+  SELECT Country,
+      COUNT(*) AS NumberOfCustomers
+  FROM Customers
+  GROUP BY Country
+  ORDER BY NumberOfCustomers DESC;
+
+Create a View: Customers By Country (Ordered by Customer Count):
+  CREATE VIEW CustomersByCountry
+  AS
+  SELECT Country,
+      COUNT(*) AS NumberOfCustomers
+  FROM Customers
+  GROUP BY Country
+  ORDER BY NumberOfCustomers DESC;
+
+Show Table Information for Customers Table:
+  PRAGMA table_info(Customers);
+
+Customer Full Name and Invoice ID Concatenation:
+  SELECT FirstName || LastName || InvoiceID AS CustomerInvoiceID
+  FROM Customers
+  ORDER BY FirstName, LastName, InvoiceID;

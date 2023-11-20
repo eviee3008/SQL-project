@@ -1,5 +1,42 @@
-This is an example of SQL queries I wrote for exploration of the publicly available chinook sample database. For clarity, I have included the database file and it's associated schema.
+This is an example of SQL queries I wrote for exploration of the publicly available chinook sample database. This was created using guidance from the UC Davis SQL for Data Science course available on the learning platform Coursera.
+For clarity, I have included the database file and it's associated schema.
 I used sqlite3 via command prompt to execute these commands. Outputs are included.
+
+Show Table Information for Customers Table:
+  PRAGMA table_info(Customers);
+
+Output:
+  cid                   name          type          notnull  dflt_value  pk
+  --------------------  ------------  ------------  -------  ----------  --
+  0                     CustomerId    INTEGER       1                    1
+  1                     FirstName     NVARCHAR(40)  1                    0
+  2                     LastName      NVARCHAR(20)  1                    0
+  3                     Company       NVARCHAR(80)  0                    0
+  4                     Address       NVARCHAR(70)  0                    0
+  5                     City          NVARCHAR(40)  0                    0
+  6                     State         NVARCHAR(40)  0                    0
+  7                     Country       NVARCHAR(40)  0                    0
+  8                     PostalCode    NVARCHAR(10)  0                    0
+  9                     Phone         NVARCHAR(24)  0                    0
+  10                    Fax           NVARCHAR(24)  0                    0
+  11                    Email         NVARCHAR(60)  1                    0
+  12                    SupportRepId  INTEGER       0                    0
+
+Show Table Information for Invoice Table:
+  PRAGMA table_info(Invoices);
+
+Output:
+  cid                   name               type           notnull  dflt_value  pk
+  --------------------  -----------------  -------------  -------  ----------  --
+  0                     InvoiceId          INTEGER        1                    1
+  1                     CustomerId         INTEGER        1                    0
+  2                     InvoiceDate        DATETIME       1                    0
+  3                     BillingAddress     NVARCHAR(70)   0                    0
+  4                     BillingCity        NVARCHAR(40)   0                    0
+  5                     BillingState       NVARCHAR(40)   0                    0
+  6                     BillingCountry     NVARCHAR(40)   0                    0
+  7                     BillingPostalCode  NVARCHAR(10)   0                    0
+  8                     Total              NUMERIC(10,2)  1                    0
 
 Total Quantity and Revenue per Invoice (Top 10). Groups records by Invoice IDs (Invoice ID is not a primary key) to provide total quantities and revenue:
   SELECT InvoiceId,
@@ -99,10 +136,34 @@ Employee Full Name and Country Abbreviation:
       SUBSTR(Country, 0, 3) AS Country
   FROM employees;
 
+Output:
+  FullName              Country
+  --------------------  -------
+  Andrew Adams          Ca
+  Nancy Edwards         Ca
+  Jane Peacock          Ca
+  Margaret Park         Ca
+  Steve Johnson         Ca
+  Michael Mitchell      Ca
+  Robert King           Ca
+  Laura Callahan        Ca
+
 Employee Full Name and Hire Year:
   SELECT FirstName || ' ' || LastName AS FullName,
       STRFTIME('%Y', HireDate) AS HireYear
   FROM employees;
+
+Output:
+  FullName              HireYear
+  --------------------  --------
+  Andrew Adams          2002
+  Nancy Edwards         2002
+  Jane Peacock          2002
+  Margaret Park         2003
+  Steve Johnson         2003
+  Michael Mitchell      2003
+  Robert King           2004
+  Laura Callahan        2004
 
 Employee Full Name, Hire Year, and Years Since Hire:
   SELECT FirstName || ' ' || LastName AS FullName,
@@ -110,8 +171,25 @@ Employee Full Name, Hire Year, and Years Since Hire:
       CAST(STRFTIME('%Y', 'now') - STRFTIME('%Y', HireDate) AS INTEGER) AS YearsSinceHire
   FROM employees;
 
+Output:
+  FullName              HireYear  YearsSinceHire
+  --------------------  --------  --------------
+  Andrew Adams          2002      21
+  Nancy Edwards         2002      21
+  Jane Peacock          2002      21
+  Margaret Park         2003      20
+  Steve Johnson         2003      20
+  Michael Mitchell      2003      20
+  Robert King           2004      19
+  Laura Callahan        2004      19
+
 Current Date in 'YYYY MM DD' Format:
-  SELECT STRFTIME('%Y %m %d','now');
+   SELECT STRFTIME('%Y %m %d','now') As CurrentDate;
+
+Output:
+  CurrentDate
+  --------------------
+  2023 11 20
 
 Employee City Classification (Calgary or Other):
   SELECT EmployeeId,
@@ -125,7 +203,19 @@ Employee City Classification (Calgary or Other):
   FROM Employees
   ORDER BY LastName, FirstName;
 
-Track Size Categories (Small, Medium, Large, Other):
+Output:
+  EmployeeId            FirstName  LastName  City        Calgary
+  --------------------  ---------  --------  ----------  -------
+  1                     Andrew     Adams     Edmonton    Other
+  8                     Laura      Callahan  Lethbridge  Other
+  2                     Nancy      Edwards   Calgary     Calgary
+  5                     Steve      Johnson   Calgary     Calgary
+  7                     Robert     King      Lethbridge  Other
+  6                     Michael    Mitchell  Calgary     Calgary
+  4                     Margaret   Park      Calgary     Calgary
+  3                     Jane       Peacock   Calgary     Calgary
+
+Track Size Categories (Small, Medium, Large, Other)(Top 10):
   SELECT TrackId,
       Name,
       Bytes,
@@ -135,7 +225,22 @@ Track Size Categories (Small, Medium, Large, Other):
           WHEN Bytes >= 500001 THEN 'large'
           ELSE 'Other'
       END bytescategory
-  FROM tracks;
+  FROM tracks
+  LIMIT 10;
+
+Output:
+  TrackId               Name                                     Bytes     bytescategory
+  --------------------  ---------------------------------------  --------  -------------
+  1                     For Those About To Rock (We Salute You)  11170334  large
+  2                     Balls to the Wall                        5510424   large
+  3                     Fast As a Shark                          3990994   large
+  4                     Restless and Wild                        4331779   large
+  5                     Princess of the Dawn                     6290521   large
+  6                     Put The Finger On You                    6713451   large
+  7                     Let's Get It Up                          7636561   large
+  8                     Inject The Venom                         6852860   large
+  9                     Snowballed                               6599424   large
+  10                    Evil Walks                               8611245   large
 
 Number of Customers per Country (Ordered by Customer Count):
   SELECT Country,
@@ -144,19 +249,69 @@ Number of Customers per Country (Ordered by Customer Count):
   GROUP BY Country
   ORDER BY NumberOfCustomers DESC;
 
+Output:
+  Country               NumberOfCustomers
+  --------------------  -----------------
+  USA                   13
+  Canada                8
+  France                5
+  Brazil                5
+  Germany               4
+  United Kingdom        3
+  Portugal              2
+  India                 2
+  Czech Republic        2
+  Sweden                1
+  Spain                 1
+  Poland                1
+  Norway                1
+  Netherlands           1
+  Italy                 1
+  Ireland               1
+  Hungary               1
+  Finland               1
+  Denmark               1
+  Chile                 1
+  Belgium               1
+  Austria               1
+  Australia             1
+  Argentina             1
+
 Create a View: Customers By Country (Ordered by Customer Count):
-  CREATE VIEW CustomersByCountry
-  AS
+  CREATE VIEW CustomersByCountry AS
   SELECT Country,
       COUNT(*) AS NumberOfCustomers
   FROM Customers
   GROUP BY Country
   ORDER BY NumberOfCustomers DESC;
 
-Show Table Information for Customers Table:
-  PRAGMA table_info(Customers);
+  SELECT * FROM CustomersByCountry;
 
-Customer Full Name and Invoice ID Concatenation:
-  SELECT FirstName || LastName || InvoiceID AS CustomerInvoiceID
-  FROM Customers
-  ORDER BY FirstName, LastName, InvoiceID;
+Output:
+  Country               NumberOfCustomers
+  --------------------  -----------------
+  USA                   13
+  Canada                8
+  France                5
+  Brazil                5
+  Germany               4
+  United Kingdom        3
+  Portugal              2
+  India                 2
+  Czech Republic        2
+  Sweden                1
+  Spain                 1
+  Poland                1
+  Norway                1
+  Netherlands           1
+  Italy                 1
+  Ireland               1
+  Hungary               1
+  Finland               1
+  Denmark               1
+  Chile                 1
+  Belgium               1
+  Austria               1
+  Australia             1
+  Argentina             1
+

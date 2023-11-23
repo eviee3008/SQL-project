@@ -1,4 +1,5 @@
-This is an example of SQL queries I wrote for exploration of the publicly available chinook sample database. This was created using guidance from the UC Davis SQL for Data Science course available on the learning platform Coursera.
+This is an example of SQL queries I wrote for exploration of the publicly available chinook sample database. 
+This work is created solely by me, but was informed using guidance from the UC Davis SQL for Data Science course available on the learning platform Coursera.
 For clarity, I have included the database file and it's associated schema.
 I used sqlite3 via command prompt to execute these commands. Outputs are included.
 

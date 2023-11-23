@@ -2,8 +2,8 @@
 Welcome to my SQL project where I explore the publicly available Chinook database using SQLite. This project involves querying the database to gather insights into various aspects, including sales patterns, employee information, track categorisation, and customer distribution.
 
 ## Database Overview
-Database File: chinook.db
-Database Schema: Schema Image
+* Database File: chinook.db
+* Database Schema: Schema Image
 The Chinook database contains information about a fictional music store, including tables such as customers, employees, invoices, tracks, and more.
 
 ## SQL Commands

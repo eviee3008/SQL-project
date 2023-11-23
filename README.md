@@ -1,5 +1,5 @@
 # SQL-project
-Commands and outputs in the 'SQL Commands' file in this repository explore the chinook database. This provides insights into sales patterns, employee information, track categorization, and customer distribution.
+Queries and outputs in the 'SQL Commands' file in this repository explore the chinook database. This provides insights into sales patterns, employee information, track categorization, and customer distribution.
 
 The database is stored in 'chinook.db'. 
 

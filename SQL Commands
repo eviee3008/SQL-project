@@ -1,6 +1,6 @@
 This is an example of SQL queries I wrote for exploration of the publicly available chinook sample database. 
 This work is created solely by me, but was informed using guidance from the UC Davis SQL for Data Science course available on the learning platform Coursera.
-For clarity, I have included the database file and it's associated schema.
+For clarity, I have included the database file and it's associated schema within the repository.
 I used sqlite3 via command prompt to execute these commands. Outputs are included.
 
 Show Table Information for Customers Table:
